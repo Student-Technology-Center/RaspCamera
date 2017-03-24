@@ -1,12 +1,6 @@
 import pygame.camera 
 import pygame.image
 
-import smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email import encoders
-from email.MIMEText import MIMEText
-from email.MIMEBase import MIMEBase
-
 import shutil
 
 from PIL import Image
@@ -16,36 +10,6 @@ import sys
 import os
 
 pygame.camera.init()
-
-def send_email():
-    time = get_time()
-    msg = MIMEMultipart()
-    
-    fromaddr = "stc.camera.vive@gmail.com"
-    message = "Sent at %s" % time 
-    password = ""
-    attach = ("pictures/%s_zip" % get_date())
-    directory_info = ("pictures/%s" % get_date())
-
-    shutil.make_archive(attach, 'zip', directory_info)
-
-    attachment = open(attach + ".zip", "rb")
-
-    part = MIMEBase('application', 'octet-stream')
-    part.set_payload((attachment).read())
-    encoders.encode_base64(part)
-    part.add_header('Content-Disposition', "attachment; filename =%s" %attach)
-
-    msg.attach(part)
-    
-    msg['From'] = fromaddr
-    msg['To'] = fromaddr
-    msg['Subject'] = message
-    
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(fromaddr,password)
-    server.sendmail(fromaddr, toaddr)
 
 def take_picture(current_camera, directory):
     img = current_camera.get_image()
@@ -83,13 +47,12 @@ def main():
         while True:
             try:
                 take_picture(webcam, working_directory)
-                time.sleep(5)
-                #send_email()
+                time.sleep(60)
             except Exception as y:
                 print "Error caught inside loop."
                 print y
                 webcam.stop()
-                time.sleep(10)
+                time.sleep(60)
                 webcam.start()
                 continue
     except Exception as e:
