@@ -49,12 +49,12 @@ def main():
                 webcam.start()
                 take_picture(webcam, working_directory)
                 webcam.stop()
-                time.sleep(60)
+                time.sleep(6)
             except Exception as y:
                 print "Error in taking picture"
                 print y
                 webcam.stop()
-                time.sleep(60)
+                time.sleep(6)
                 webcam.start()
                 continue
         sys.exit()
