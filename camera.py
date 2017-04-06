@@ -1,9 +1,10 @@
 import pygame.camera 
 import pygame.image
+from PIL import Image
 
 import shutil
 
-from PIL import Image
+import __future__
 import time
 import datetime
 import sys
@@ -43,18 +44,20 @@ def main():
         working_directory = make_directory(get_date())
         possible_cameras = pygame.camera.list_cameras()     
         webcam = pygame.camera.Camera(possible_cameras[0], (480, 270))
-        webcam.start()
-        while True:
+        for i in range(0, 10):
             try:
+                webcam.start()
                 take_picture(webcam, working_directory)
+                webcam.stop()
                 time.sleep(60)
             except Exception as y:
-                print "Error caught inside loop."
+                print "Error in taking picture"
                 print y
                 webcam.stop()
                 time.sleep(60)
                 webcam.start()
                 continue
+        sys.exit()
     except Exception as e:
         print "System caught an error."
         print e
