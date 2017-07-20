@@ -49,7 +49,7 @@ def make_directory(string_date):
 def get_time():
     '''Wrapper function for grabbing the current time in a pleasing format.'''
     time = datetime.datetime.now()
-    current_time = "%s:%s:%s" % (time.hour, time.minute, time.second)
+    current_time = "%s_%s_%s" % (time.hour, time.minute, time.second)
     return current_time
                       
 def get_date():
