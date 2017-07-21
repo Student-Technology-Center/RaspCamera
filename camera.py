@@ -25,9 +25,9 @@ def take_picture(current_camera, directory):
     pygame.image.save(img, "%s/%s_temp.jpg" % (directory, save_time))
     img_to_brighten = Image.open("%s/%s_temp.jpg" % (directory, save_time))
     img_brightened = img_to_brighten.point(lambda p: p * 1.5)
-	draw = ImageDraw.Draw(img_brightened)
-	draw.Text((10, 10), get_date(), fill=(255, 255, 255, 128))
-	draw.Text((10, 20), get_time(), fill=(255, 255, 255, 128))
+    draw = ImageDraw.Draw(img_brightened)
+    draw.Text((10, 10), get_date(), fill=(255, 255, 255, 128))
+    draw.Text((10, 20), get_time(), fill=(255, 255, 255, 128))
     img_brightened.save("%s/%s.jpg" % (directory, save_time))
 
     #Removes the temp (old) image file
