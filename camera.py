@@ -79,7 +79,7 @@ def main():
     try:
         interval = 6
         count = 0
-        COUNT_LIMIT = 5
+        COUNT_LIMIT = 50
         working_directory = make_directory(get_date_hour())
         possible_cameras = pygame.camera.list_cameras()     
         webcam = pygame.camera.Camera(possible_cameras[0], (480, 270))
@@ -92,6 +92,7 @@ def main():
 
         scpScript = "scp -r -i /home/pi/.ssh/id_rsa %s rasp@140.160.191.116:~/pictures_mailbox" % (working_directory)
         os.system(scpScript)
+        os.remove(working_directory)
 
         sys.exit()
     except Exception as e:
