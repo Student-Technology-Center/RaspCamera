@@ -10,38 +10,44 @@ import time
 import datetime
 import sys
 import os
+import sched
 
 pygame.camera.init()
 
-def take_picture(current_camera, directory):
-    #Initializes the camera for a picture
-    img = current_camera.get_image()
+def take_picture(webcam, directory, num):
+    try:
+        webcam.start()
+        #take_picture(webcam, working_directory)
+        #Initializes the camera for a picture
+        img = webcam.get_image()
 
-    #Gets time to write to sys out
-    save_time = get_time()
+        #Gets time to write to sys out
+        save_time = get_time()
 
-    #These next few lines takes in the previous image and brightens them.
-    #Using a lambda function and the PIL library
-    pygame.image.save(img, "%s/%s_temp.jpg" % (directory, save_time))
-    img_to_brighten = Image.open("%s/%s_temp.jpg" % (directory, save_time))
-    img_brightened = img_to_brighten.point(lambda p: p * 1.5)
-    draw = ImageDraw.Draw(img_brightened)
-    draw.text((10, 10), get_date(), fill=(255, 255, 255, 128))
-    draw.text((10, 20), get_time(), fill=(255, 255, 255, 128))
-    img_brightened.save("%s/%s.jpg" % (directory, save_time))
+        #These next few lines takes in the previous image and brightens them.
+        #Using a lambda function and the PIL library
+        pygame.image.save(img, "%s/%s_temp.jpg" % (directory, num))
+        img_to_brighten = Image.open("%s/%s_temp.jpg" % (directory, num))
+        img_brightened = img_to_brighten.point(lambda p: p * 1.5)
+        draw = ImageDraw.Draw(img_brightened)
+        draw.text((10, 10), get_date(), fill=(255, 255, 255, 128))
+        draw.text((10, 20), get_time(), fill=(255, 255, 255, 128))
+        img_brightened.save("%s/%s.jpg" % (directory, num))
 
-    #Removes the temp (old) image file
-    os.remove("%s/%s_temp.jpg" % (directory, save_time))
+        #Removes the temp (old) image file
+        os.remove("%s/%s_temp.jpg" % (directory, num))
 
-    #Logs the output to a file
-    filename = directory + "/Todays_Log.txt"
-    fn = open(filename, "w")
-    fn.write("Output to %s/%s" % (directory,save_time))
-    fn.close()
+        #Logs the output to a file
+        filename = directory + "/Todays_Log.txt"
+        fn = open(filename, "a")
+        fn.write("Output to %s/%s.jpg" % (directory, num))
+        fn.close()
 
-    #Saves the output directory
-    total_directory = "Output to %s/%s" % (directory,save_time)
-    return total_directory 
+        webcam.stop()
+    except Exception as y:
+        print "Error in taking picture"
+        print y
+        webcam.stop()
 
 def make_directory(string_date):
     '''Creates a directory for the current date'''
@@ -53,14 +59,16 @@ def make_directory(string_date):
 def get_time():
     '''Wrapper function for grabbing the current time in a pleasing format.'''
     time = datetime.datetime.now()
-    current_time = "%s_%s_%s" % (time.hour, time.minute, time.second)
-    return current_time
+    return "%s:%s:%s" % (time.hour, time.minute, time.second)
                       
 def get_date():
     '''Wrapper function for grabbing the current date in a pleasing format.'''
     time = datetime.datetime.now()
-    date = "%s-%s-%s" % (time.month, time.day, time.year)
-    return date
+    return "%s/%s/%s" % (time.month, time.day, time.year)
+
+def get_date_hour():
+    time = datetime.datetime.now()
+    return "%s_%s_%s__%s" % (time.month, time.day, time.year, time.hour)
 
 def main():
     '''
@@ -70,22 +78,18 @@ def main():
     '''
     try:
         interval = 6
-        working_directory = make_directory(get_date())
+        count = 0
+        COUNT_LIMIT = 10
+        working_directory = make_directory(get_date_hour())
         possible_cameras = pygame.camera.list_cameras()     
         webcam = pygame.camera.Camera(possible_cameras[0], (480, 270))
-        for i in range(0, 10):
-            try:
-                webcam.start()
-                take_picture(webcam, working_directory)
-                webcam.stop()
-                time.sleep(interval)
-            except Exception as y:
-                print "Error in taking picture"
-                print y
-                webcam.stop()
-                time.sleep(interval)
-                webcam.start()
-                continue
+
+        starttime = time.time()
+        while count < COUNT_LIMIT:
+            take_picture(webcam, working_directory, count)
+            count++
+            time.sleep(interval - ((time.time() - starttime) % interval))
+
         sys.exit()
     except Exception as e:
         print "System caught an error."
