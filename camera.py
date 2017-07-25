@@ -87,7 +87,7 @@ def main():
         starttime = time.time()
         while count < COUNT_LIMIT:
             take_picture(webcam, working_directory, count)
-            count++
+            count = count + 1
             time.sleep(interval - ((time.time() - starttime) % interval))
 
         sys.exit()
