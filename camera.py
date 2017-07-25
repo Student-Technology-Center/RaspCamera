@@ -90,7 +90,7 @@ def main():
             count = count + 1
             time.sleep(interval - ((time.time() - starttime) % interval))
 
-        scpScript = "scp -i /home/pi/.ssh/id_rsa %s rasp@140.160.191.116:~/pictures_mailbox" % (working_directory)
+        scpScript = "scp -r -i /home/pi/.ssh/id_rsa %s rasp@140.160.191.116:~/pictures_mailbox" % (working_directory)
         os.system(scpScript)
 
         sys.exit()
