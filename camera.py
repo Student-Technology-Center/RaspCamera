@@ -51,7 +51,7 @@ def take_picture(webcam, directory, num):
 
 def make_directory(string_date):
     '''Creates a directory for the current date'''
-    directory = "media/tDrive/rasp-camera/" + string_date
+    directory = "temp/" + string_date
     if not os.path.exists(directory):
         os.makedirs(directory)
     return directory
