@@ -40,7 +40,7 @@ def take_picture(webcam, directory, num):
         #Logs the output to a file
         filename = directory + "/Todays_Log.txt"
         fn = open(filename, "a")
-        fn.write("Output to %s/%s.jpg" % (directory, num))
+        fn.write("Output to %s/%s.jpg\n" % (directory, num))
         fn.close()
 
         webcam.stop()
